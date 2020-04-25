@@ -12,11 +12,14 @@
     <ul class="navbar_ul">
         <li class="navbar_li"><a href="/">Home</a></li>
         <li class="navbar_li"><a class="active" href="/profile">My profile</a></li>
-        <li class="navbar_li"><a href="#about">About</a></li>
+        <li class="navbar_li"><a href="/{{ user_id }}/edit">Edit Profile</a></li>
         <li class="navbar_li logout"><a href="/logout">Log out</a></li>
     </ul>
     <!-- end -->
     <h1>Welcome to your profile, {{ username }}</h1>
+    <h1>Your email - {{ email }}</h1>
+    <h1>Your address - {{ address }}</h1>
+    <h1>Your mobile - {{ mobile }}</h1>
 
 </body>
 </html>

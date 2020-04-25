@@ -27,15 +27,41 @@ def index():
     else:
         return render_template('index.html', token=token)
 
+# opravih profile display-a
 @app.route('/profile')
 def profile():
     token = request.cookies.get('token')
     if token:
         user_id = session.get("user_id")
         username = User.find_name_by_id(user_id)
-        return render_template('profile.html', username=username)
+        email = User.find_email_by_id(user_id)
+        address = User.find_address_by_id(user_id)
+        mobile = User.find_mobile_by_id(user_id)
+        return render_template('profile.html', 
+                                username=username, 
+                                email = email, 
+                                address = address, 
+                                mobile = mobile,
+                                user_id = user_id)
+                                
     else:
         return redirect('/login')
+
+#tuka pravih edit funkciqta trqq ba4ka
+@app.route('/<int:id>/edit', methods=['GET', 'POST'])
+def edit_profile(id):
+    user = User.find_user_by_id(id)
+    if request.method == "GET":
+        return render_template('edit_profile.html', user = user)
+    elif request.method == "POST":
+        user.email = request.form['email']
+        #user.password = request.form['password'] 
+        user.name = request.form['name'] 
+        user.address = request.form['address'] 
+        user.mobile = request.form['mobile'] 
+        user.save()
+        return redirect('/profile')
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():

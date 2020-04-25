@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
         password TEXT NOT NULL,
         name TEXT NOT NULL,
         address TEXT NOT NULL,
-        mobile INTEGER NOT NULL
+        mobile TEXT NOT NULL 
     )
 ''')
 

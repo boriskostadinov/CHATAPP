@@ -26,7 +26,7 @@ class User:
             	INSERT INTO users (email, password, name, address, mobile)
             	VALUES (?, ?, ?, ?, ?)''', values)
         	return self
-            
+
     @staticmethod
     def find(email):
         if not email:
@@ -38,6 +38,33 @@ class User:
             if row:
                 return User(*row)
 
+    # @staticmethod
+    # def find_id_by_email(email):
+    #     with DB() as db:
+    #         id = db.execute(
+    #             'SELECT id FROM users WHERE email = ?',(email,)
+    #         ).fetchone()
+    #         return id[0]
+
+    @staticmethod
+    def find_id(id):
+        with DB() as db:
+            row = db.execute(
+                'SELECT * FROM users WHERE id = ?',(id,)
+            ).fetchone()
+            return User(*row)
+
+    @staticmethod
+    def find_user_by_id(id):
+        if not id:
+            return None
+        with DB() as db:
+            row = db.execute(
+                'SELECT * FROM users WHERE id = ?',(id,)
+            ).fetchone()
+            if row:
+                return User(*row)
+
     @staticmethod
     def find_name_by_id(id):
         with DB() as db:
@@ -45,6 +72,47 @@ class User:
                 'SELECT name FROM users WHERE id = ?',(id,)
             ).fetchone()
             return name[0]
+
+    @staticmethod
+    def find_email_by_id(id):
+        with DB() as db:
+            email = db.execute(
+                'SELECT email FROM users WHERE id = ?',(id,)
+            ).fetchone()
+            return email[0]
+
+    @staticmethod
+    def find_address_by_id(id):
+        with DB() as db:
+            address = db.execute(
+                'SELECT address FROM users WHERE id = ?',(id,)
+            ).fetchone()
+            return address[0]
+
+    @staticmethod
+    def find_mobile_by_id(id):
+        with DB() as db:
+            mobile = db.execute(
+                'SELECT mobile FROM users WHERE id = ?',(id,)
+            ).fetchone()
+            return mobile[0]
+
+    def save(self):
+        with DB() as db:
+            values = (
+                self.email,
+               # self.password,
+                self.name,
+                self.address,
+                self.mobile,
+                self.id
+            )
+            db.execute(
+                '''UPDATE users 
+                SET email = ?, name = ?, address = ?, mobile = ?
+                WHERE id = ?''', values
+            )
+            return self
 
     @staticmethod
     def hashPassword(password):
