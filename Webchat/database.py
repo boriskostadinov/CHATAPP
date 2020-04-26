@@ -16,6 +16,20 @@ CREATE TABLE IF NOT EXISTS users
     )
 ''')
 
+conn.cursor().execute('''
+CREATE TABLE IF NOT EXISTS follow 
+    (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL ,
+        user_id2 INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (user_id2) REFERENCES users(id)
+        
+    )
+''')
+
+
+
 conn.commit()
 
 class DB:

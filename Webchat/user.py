@@ -91,6 +91,26 @@ class User:
             ).fetchone()
             return mobile[0]
 
+
+    def follow(self, user_id2):
+        with DB() as db:
+            db.execute(
+                'INSERT INTO follow (user_id, user_id2) values(?,?)', (self.id, user_id2)
+            )
+            return self
+
+    def check_follow(self, user_id2):
+        with DB() as db:
+            following = db.execute(
+                'SELECT user_id2 FROM follow WHERE user_id = ? AND user_id2 = ?',(self.id, user_id2,)
+            ).fetchone()
+            print(following)
+            print('1')
+            if following == None:
+                return False
+            else:
+                return True
+
     def save(self):
         with DB() as db:
             values = (

@@ -66,11 +66,29 @@ def search_user():
     elif request.method == "POST":
         email = request.form['email']
         if User.find(email) == False:
-            username = "Not found"
+            username = "This user doesn't exists"
         else:
             user2 = User.find(email)
             username = user2.name
-        return render_template('/search.html', username=username)
+        return redirect(url_for('follow', username=username, id=user2.id))
+
+@app.route('/<int:id>/follow', methods=['GET', 'POST'])
+def follow(id):
+    user2 = User.find_user_by_id(id)
+    # token = request.cookies.get('token')
+    user_id = session.get("user_id")
+    user = User.find_user_by_id(user_id)
+    if request.method == 'GET':
+        return render_template('follow.html', user2 = user2, user = user)
+    elif request.method == 'POST':
+        user1 = User.find_user_by_id(user_id)
+        if user1.check_follow(user2.id) == False:
+            user1.follow(user2.id)
+        return redirect(url_for('follow', id=user2.id))
+        
+
+
+
 
 
 @app.route('/register', methods=["GET", "POST"])
