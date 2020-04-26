@@ -27,7 +27,6 @@ def index():
     else:
         return render_template('index.html', token=token)
 
-# opravih profile display-a
 @app.route('/profile')
 def profile():
     token = request.cookies.get('token')
@@ -47,7 +46,6 @@ def profile():
     else:
         return redirect('/login')
 
-#tuka pravih edit funkciqta trqq ba4ka
 @app.route('/<int:id>/edit', methods=['GET', 'POST'])
 def edit_profile(id):
     user = User.find_user_by_id(id)
@@ -55,12 +53,24 @@ def edit_profile(id):
         return render_template('edit_profile.html', user = user)
     elif request.method == "POST":
         user.email = request.form['email']
-        #user.password = request.form['password'] 
         user.name = request.form['name'] 
         user.address = request.form['address'] 
         user.mobile = request.form['mobile'] 
         user.save()
         return redirect('/profile')
+
+@app.route('/search', methods=['GET', 'POST'])
+def search_user():
+    if request.method == 'GET':
+        return render_template('search.html')
+    elif request.method == "POST":
+        email = request.form['email']
+        if User.find(email) == False:
+            username = "Not found"
+        else:
+            user2 = User.find(email)
+            username = user2.name
+        return render_template('/search.html', username=username)
 
 
 @app.route('/register', methods=["GET", "POST"])

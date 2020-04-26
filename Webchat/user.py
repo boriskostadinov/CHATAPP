@@ -37,14 +37,8 @@ class User:
             ).fetchone()
             if row:
                 return User(*row)
-
-    # @staticmethod
-    # def find_id_by_email(email):
-    #     with DB() as db:
-    #         id = db.execute(
-    #             'SELECT id FROM users WHERE email = ?',(email,)
-    #         ).fetchone()
-    #         return id[0]
+            else:
+                return False
 
     @staticmethod
     def find_id(id):
