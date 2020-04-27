@@ -2,11 +2,14 @@ from functools import wraps
 
 from flask import Flask
 from flask import render_template, request, redirect, url_for, jsonify, session, make_response
+from werkzeug.utils import secure_filename
 from user import User
 import json
+import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "SxOW8IKSGVShQD6BXtQzMA"
+upload_folder = "\\D:\\CHATAPP\\Webchat\\img"
 
 def require_login(func):
     @wraps(func)
@@ -67,6 +70,7 @@ def search_user():
         email = request.form['email']
         if User.find(email) == False:
             username = "This user doesn't exists"
+            return redirect('/search')
         else:
             user2 = User.find(email)
             username = user2.name
@@ -98,13 +102,24 @@ def register():
         if request.method == 'GET':
             return render_template('register.html')
         elif request.method == 'POST':
+            # if 'file' not in request.files:
+            #     return redirect(request.url)
+            # file = request.files['file']
+            # if file.filename == '':
+            #     filename = secure_filename("/default.png")
+            #     filepath = os.path.join("img", filename)
+            # if file and User.allowed_file(file.filename):
+            #     filename = secure_filename(file.filename)
+            #     file.save(os.path.join(upload_folder, filename))
+            #     filepath = os.path.join("img/uploads", filename)
             info = (
                 None,
                 request.form['email'],
                 User.hashPassword(request.form['password']),
                 request.form['name'],
                 request.form['address'],
-                request.form['mobile']
+                request.form['mobile'] #,
+                # filepath
             )
             User(*info).create()
             return redirect('/')

@@ -5,15 +5,13 @@
     <title>Edit Profile</title>
 </head>
 <body>
-    <form action="/{{ user.id }}/edit" method="POST">
+    <div class="form">
+        <h1></h1>
+       <form action="/{{ user.id }}/edit" method="POST">
 
         <div class="form__group">
             <input name="email" type="text" value ="{{ user.email }}" class="form__input" />
         </div>
-
-        <!-- <div class="form__group">
-            <input name="password" type="text" value ="{{ user.passowrd }}" class="form__input" />
-        </div> -->
 
         <div class="form__group">
             <input name="name" type="text" value ="{{ user.name }}" class="form__input" />
@@ -27,7 +25,12 @@
             <input name="mobile" type="text" value ="{{ user.mobile }}" class="form__input" />
         </div>
           
-      <button type="submit">Apply</button>
-    </form>
+        <button type="submit">Apply</button>
+        </form>
+        <form action="/profile">
+           <input type="submit" value="Back" />
+        </form> 
+    </div>
+    
 </body>
 </html>

@@ -9,14 +9,18 @@ from itsdangerous import (
 
 SECRET_KEY = "SxOW8IKSGVShQD6BXtQzMA"
 
+
 class User:
-    def __init__(self, id, email, password, name, address, mobile):
+    def __init__(self, id, email, password, name, address, mobile
+    # , picture
+    ):
         self.id = id
         self.email = email
         self.password = password
         self.name = name
         self.address = address
         self.mobile = mobile
+        # self.picture = picture
 
     def create(self):
     	with DB() as db:
@@ -26,6 +30,11 @@ class User:
             	INSERT INTO users (email, password, name, address, mobile)
             	VALUES (?, ?, ?, ?, ?)''', values)
         	return self
+
+    # @staticmethod
+    # def allowed_file(filename):
+    #     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+    #     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     @staticmethod
     def find(email):
@@ -119,6 +128,7 @@ class User:
                 self.name,
                 self.address,
                 self.mobile,
+                # self.picture,
                 self.id
             )
             db.execute(
