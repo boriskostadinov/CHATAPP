@@ -21,7 +21,10 @@
     {% if user.check_follow(user2.id) %}
     <div class="form">
         <h1>You are following {{ user2.name }}</h2>
-        <button>Unfollow</button>
+        <form action="/{{ user2.id }}/unfollow?username={{ user2.name }}" method="POST">
+            <input type="submit" value="Unfollow" />
+        </form>
+        <!-- <button>Unfollow</button> -->
         <form action="/search">
             <input type="submit" value="Back" />
         </form>

@@ -93,6 +93,15 @@ class User:
             return address[0]
 
     @staticmethod
+    def find_id_by_name(name):
+        with DB() as db:
+            id = db.execute(
+                'SELECT id FROM users WHERE name = ?',(name,)
+            ).fetchone()
+            return id[0]
+
+
+    @staticmethod
     def find_mobile_by_id(id):
         with DB() as db:
             mobile = db.execute(
@@ -119,6 +128,13 @@ class User:
                 return False
             else:
                 return True
+
+    def unfollow(self, user_id2):
+        with DB() as db:
+            db.execute(
+                'DELETE FROM follow WHERE user_id = ? AND user_id2 =?',(self.id, user_id2,)
+            )
+        return self
 
     def save(self):
         with DB() as db:

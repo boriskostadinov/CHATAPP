@@ -3,13 +3,21 @@ from functools import wraps
 from flask import Flask
 from flask import render_template, request, redirect, url_for, jsonify, session, make_response
 from werkzeug.utils import secure_filename
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from time import localtime, strftime
+
 from user import User
+
 import json
 import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "SxOW8IKSGVShQD6BXtQzMA"
+app.secret_key = "SxOW8IKSGVShQD6BXtQzMA"
 upload_folder = "\\D:\\CHATAPP\\Webchat\\img"
+
+socketio = SocketIO(app)
+ROOMS = ["lounge", "news", "games", "coding"]
 
 def require_login(func):
     @wraps(func)
@@ -79,7 +87,6 @@ def search_user():
 @app.route('/<int:id>/follow', methods=['GET', 'POST'])
 def follow(id):
     user2 = User.find_user_by_id(id)
-    # token = request.cookies.get('token')
     user_id = session.get("user_id")
     user = User.find_user_by_id(user_id)
     if request.method == 'GET':
@@ -90,6 +97,15 @@ def follow(id):
             user1.follow(user2.id)
         return redirect(url_for('follow', id=user2.id))
         
+@app.route('/<int:id>/unfollow', methods=['GET', 'POST'])
+def unfollow(id):
+    username = request.args.get('username')
+    # print("\n\n\n\n\n")
+    user_id2 = User.find_id_by_name(username)
+    user_id1 = session.get("user_id")
+    current_user = User.find_user_by_id(user_id1)
+    current_user.unfollow(user_id2)
+    return redirect(url_for('search_user'))
 
 
 
@@ -153,5 +169,38 @@ def logout():
     session.pop("user_id")
     return resp
 
-if __name__ == '__main__':
-    app.run(debug=True)      
+@app.route("/chat", methods=['GET', 'POST'])
+def chat():
+    
+    user_id = session.get("user_id")
+    username = User.find_name_by_id(user_id)
+    # print(username)
+
+    return render_template('chat.html', username=username, rooms=ROOMS)
+
+@socketio.on('message')
+def message(data):
+    
+    print(f"\n\n{data}\n\n")
+    # emit('some-event', 'this is a  custom event message')
+
+    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+ 
+@socketio.on("join")
+def join(data):
+
+    join_room(data['room'])
+    send({'msg': data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+
+@socketio.on("leave")
+def leave(data):
+
+    leave_room(data['room'])
+    send({'msg': data['username'] + " has left the " + data['room'] + " room."}, room=data['room'])
+
+
+if __name__ == "__main__":
+    socketio.run(app, debug=True)
+
+# if __name__ == '__main__':
+#     app.run(debug=True)      
